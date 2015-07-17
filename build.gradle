@@ -1,15 +1,86 @@
-group 'com.soo'
-version '1.0-SNAPSHOT'
+buildscript {
+
+    ext {
+        vSpringBoot = '1.2.4.RELEASE'
+        vSpringioPlugin = '0.5.1.RELEASE'
+        vJavaLang = '1.8'
+
+        springRepo = 'http://repo.spring.io/libs-release'
+        springPluginRepo = 'http://repo.spring.io/plugins-release'
+    }
+
+    repositories {
+        maven {
+            url springRepo
+        }
+
+        maven {
+            url springPluginRepo
+        }
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${vSpringBoot}")
+        classpath("io.spring.gradle:dependency-management-plugin:${vSpringioPlugin}")
+    }
+
+}
 
 apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'war'
+apply plugin: 'spring-boot'
+apply plugin: 'idea'
+apply plugin: 'eclipse-wtp'
 
-sourceCompatibility = 1.5
+sourceCompatibility = vJavaLang
+targetCompatibility = vJavaLang
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/main/")
+    }
+}
+
+eclipse {
+    classpath {
+        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+
+    project {
+        natures += 'org.springframework.ide.eclipse.core.springnature'
+    }
+}
 
 repositories {
     mavenCentral()
+    jcenter()
+}
+
+configurations {
+    providedRuntime
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.5.2")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+}
+
+war {
+    baseName = 'web'
+    version = '0.0.1-SNAPSHOT'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
 }
