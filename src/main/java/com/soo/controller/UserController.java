@@ -8,6 +8,7 @@ import com.soo.repository.UserRepository;
 import com.soo.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -42,9 +43,11 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity postUser(@RequestBody UserDTO.Request request, BindingResult result) {
         if (result.hasErrors()) {
+            System.out.println("똑같은 부분 수정2");
             System.out.println("hasErrors" + result.getAllErrors());
             return new ResponseEntity<>(new ErrorResponse("user.create.error", "뭔가 잘못 입력하신듯..."), HttpStatus.BAD_REQUEST);
         }
+
         User user = modelMapper.map(request, User.class);
         User newUser = userService.createUser(user);
         UserDTO.Response response = modelMapper.map(newUser, UserDTO.Response.class);
@@ -54,10 +57,10 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getUsers() {
         List<UserDTO.Response> response = userRepository.findAll().stream().map(a -> modelMapper.map(a, UserDTO.Response.class))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
 
-        return new ResponseEntity<>(userAssembler.toResource(response), HttpStatus.OK);
-    }
+    return new ResponseEntity<>(userAssembler.toResource(response), HttpStatus.OK);
+}
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable int id) {
