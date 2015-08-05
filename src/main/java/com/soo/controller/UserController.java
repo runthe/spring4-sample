@@ -43,7 +43,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity postUser(@RequestBody UserDTO.Request request, BindingResult result) {
         if (result.hasErrors()) {
-            System.out.println("똑같은 부분 수정230");
+            System.out.println("똑같은 부분 1-00");
             System.out.println("zzzddd");
             System.out.println("hasErrors" + result.getAllErrors());
             return new ResponseEntity<>(new ErrorResponse("user.create.error", "뭔가 잘못 입력하신듯..."), HttpStatus.BAD_REQUEST);
