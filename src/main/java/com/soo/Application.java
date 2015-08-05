@@ -14,7 +14,7 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(args);
-        ConfigurableApplicationContext context = application.run(Application.class);
+        ConfigurableApplicationContext context = SpringApplication.run(Application.class);
         //UserController userController = context.getBean(UserController.class);
     }
 
